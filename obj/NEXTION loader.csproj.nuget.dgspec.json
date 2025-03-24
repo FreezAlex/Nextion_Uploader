@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "D:\\Project\\Visual_Studio\\NEXTION loader\\NEXTION loader\\NEXTION loader.csproj": {}
+    "D:\\Project\\Visual_Studio\\NEXTION loader\\NEXTION loader.csproj": {}
   },
   "projects": {
-    "D:\\Project\\Visual_Studio\\NEXTION loader\\NEXTION loader\\NEXTION loader.csproj": {
+    "D:\\Project\\Visual_Studio\\NEXTION loader\\NEXTION loader.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\Project\\Visual_Studio\\NEXTION loader\\NEXTION loader\\NEXTION loader.csproj",
+        "projectUniqueName": "D:\\Project\\Visual_Studio\\NEXTION loader\\NEXTION loader.csproj",
         "projectName": "NEXTION loader",
-        "projectPath": "D:\\Project\\Visual_Studio\\NEXTION loader\\NEXTION loader\\NEXTION loader.csproj",
+        "projectPath": "D:\\Project\\Visual_Studio\\NEXTION loader\\NEXTION loader.csproj",
         "packagesPath": "C:\\Users\\Berej\\.nuget\\packages\\",
-        "outputPath": "D:\\Project\\Visual_Studio\\NEXTION loader\\NEXTION loader\\obj\\",
+        "outputPath": "D:\\Project\\Visual_Studio\\NEXTION loader\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\Berej\\AppData\\Roaming\\NuGet\\NuGet.Config",

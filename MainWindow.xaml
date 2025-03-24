@@ -3,12 +3,12 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="Nextion Programmer" Height="355" Width="386">
     <Grid Margin="10,10,10,-6">
-        <Button Name="btnSelectFile" Content="Select Firmware File" HorizontalAlignment="Left" VerticalAlignment="Top" Width="150" Height="30" Margin="10,10,0,0" Click="btnSelectFile_Click"/>
+        <Button Name="btnSelectFile" Content="Відкрити файл" HorizontalAlignment="Left" VerticalAlignment="Top" Width="150" Height="30" Margin="10,10,0,0" Click="btnSelectFile_Click"/>
         <ComboBox Name="cbComPorts" HorizontalAlignment="Left" VerticalAlignment="Top" Width="150" Height="30" Margin="182,10,0,0" SelectionChanged="cbComPorts_SelectionChanged"/>
-        <Button Name="btnAutoMode" Content="Auto Mode" HorizontalAlignment="Left" VerticalAlignment="Top" Width="150" Height="30" Margin="182,58,0,0" Click="btnAutoMode_Click"/>
-        <Button Name="btnManualMode" Content="Manual Mode" HorizontalAlignment="Left" VerticalAlignment="Top" Width="150" Height="30" Margin="10,110,0,0" Click="btnManualMode_Click"/>
-        <Button Name="btnSendBauds" Content="Send Bauds" HorizontalAlignment="Left" VerticalAlignment="Top" Width="150" Height="30" Margin="10,57,0,0" Click="btnSendBauds_Click"/>
-        <Button Name="btnStopAutoMode" Content="Stop Auto Mode" HorizontalAlignment="Left" VerticalAlignment="Top" Width="150" Height="30" Margin="182,110,0,0" Click="btnStopAutoMode_Click" IsEnabled="False"/>
+        <Button Name="btnAutoMode" Content="Автоматична прошивка" HorizontalAlignment="Left" VerticalAlignment="Top" Width="150" Height="30" Margin="182,58,0,0" Click="btnAutoMode_Click"/>
+        <Button Name="btnManualMode" Content="Прошивка (разова)" HorizontalAlignment="Left" VerticalAlignment="Top" Width="150" Height="30" Margin="10,110,0,0" Click="btnManualMode_Click"/>
+        <Button Name="btnSendBauds" Content="Встановити швидкість" HorizontalAlignment="Left" VerticalAlignment="Top" Width="150" Height="30" Margin="10,57,0,0" Click="btnSendBauds_Click"/>
+        <Button Name="btnStopAutoMode" Content="Зупинити" HorizontalAlignment="Left" VerticalAlignment="Top" Width="150" Height="30" Margin="182,110,0,0" Click="btnStopAutoMode_Click" IsEnabled="False"/>
         <TextBox Name="txtStatus" HorizontalAlignment="Left" VerticalAlignment="Top" Width="322" Height="146" Margin="10,157,0,0" IsReadOnly="True"/>
     </Grid>
 </Window>

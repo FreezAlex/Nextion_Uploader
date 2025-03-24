@@ -39,7 +39,7 @@ namespace NEXTION_loader
             {
                 string selectedPort = cbComPorts.SelectedItem.ToString();
                 serialPort.PortName = selectedPort;
-                txtStatus.Text += "\r\nSelected COM Port: " + selectedPort;
+                txtStatus.Text += "\r\n COM порт: " + selectedPort;
             }
         }
 
@@ -51,7 +51,7 @@ namespace NEXTION_loader
             if(openFileDialog.ShowDialog( ) == true)
             {
                 firmwareFile = openFileDialog.FileName;
-                txtStatus.Text += "\r\nFirmware selected: " + firmwareFile;
+                txtStatus.Text += "\r\n Файл: " + firmwareFile;
             }
         }
 
@@ -60,19 +60,21 @@ namespace NEXTION_loader
         {
             if(string.IsNullOrEmpty(firmwareFile))
             {
-                txtStatus.Text += "\r\nError: Please select a firmware file first.";
+                txtStatus.Text += "\r\n Помилка: Оберіть файл.";
                 return;
             }
 
             if(serialPort.PortName == null || serialPort.PortName == "")
             {
-                txtStatus.Text += "\r\nError: Please select a COM port first.";
+                txtStatus.Text += "\r\n Помилка: Оберіть COM порт.";
                 return;
             }
 
-            txtStatus.Text += "\r\nStarting Auto Mode...";
+            txtStatus.Text += "\r\n Автоматичний режим...";
             stopAutoMode = false;
             btnStopAutoMode.IsEnabled = true;
+            btnManualMode.IsEnabled = false;
+            btnSendBauds.IsEnabled = false;
             autoModeThread = new Thread(AutoModeProcess);
             autoModeThread.Start( );
         }
@@ -80,24 +82,28 @@ namespace NEXTION_loader
         // Ручний режим
         private void btnManualMode_Click(object sender, RoutedEventArgs e)
         {
+            if(!serialPort.IsOpen)
+            {
+                serialPort.Open( );
+            }
             if(string.IsNullOrEmpty(firmwareFile))
             {
-                txtStatus.Text += "\r\nError: Please select a firmware file first.";
+                txtStatus.Text += "\r\n Помилка: Оберіть файл.";
                 return;
             }
 
             if(serialPort.PortName == null || serialPort.PortName == "")
             {
-                txtStatus.Text += "\r\nError: Please select a COM port first.";
+                txtStatus.Text += "\r\n Помилка: Оберіть COM порт.";
                 return;
             }
 
-            txtStatus.Text += "\r\nStarting Manual Mode...";
+            txtStatus.Text += "\r\n Ручний режим...";
 
             // Підключаємося до дисплея вручну
             if(!TryConnectToDisplay( ))
             {
-                txtStatus.Text += "\r\nError: Display connection failed.";
+                txtStatus.Text += "\r\n Помилка: Дісплей не підключено.";
                 return;
             }
             // Відправляємо команду для початку прошивки
@@ -108,7 +114,7 @@ namespace NEXTION_loader
             // Чекаємо відповіді 0x05
             if(!WaitForResponse(0x05))
             {
-                txtStatus.Text += "\r\nError: No response after whmi-wri.";
+                txtStatus.Text += "\r\n Помилка: рема відповіді на whmi-wri.";
                 return;
             }
 
@@ -127,7 +133,7 @@ namespace NEXTION_loader
 
                 if(!WaitForResponse(0x05))
                 {
-                    txtStatus.Text += "\r\nError: No response after sending data.";
+                    txtStatus.Text += "\r\n Помилка: Дані не передано.";
                     return;
                 }
             }
@@ -135,11 +141,11 @@ namespace NEXTION_loader
             // Чекаємо на фінальну відповідь
             if(!WaitForFinalResponse( ))
             {
-                txtStatus.Text += "\r\nError: Final response timeout.";
+                txtStatus.Text += "\r\n Помилка: Кінцеву відповідь не отримано.";
             }
             else
             {
-                txtStatus.Text += "\r\nOK, Firmware update complete.";
+                txtStatus.Text += "\r\n ОК! Завершено успішно.";
             }
         }
 
@@ -149,7 +155,7 @@ namespace NEXTION_loader
         {
             if(serialPort.PortName == null || serialPort.PortName == "")
             {
-                txtStatus.Text += "\r\nError: Please select a COM port first.";
+                txtStatus.Text += "\r\n Помилка: Виберіть COM порт.";
                 return;
             }
             set_bauds_115200( );
@@ -167,8 +173,10 @@ namespace NEXTION_loader
         private void btnStopAutoMode_Click(object sender, RoutedEventArgs e)
         {
             stopAutoMode = true;
-            txtStatus.Text += "\r\nAuto Mode Stopped.";
+            txtStatus.Text += "\r\n Автоматичний режим зупинено.";
             btnStopAutoMode.IsEnabled = false;
+            btnManualMode.IsEnabled = true;
+            btnSendBauds.IsEnabled = true;
         }
 
         // Автоматичний процес
@@ -177,10 +185,14 @@ namespace NEXTION_loader
 
             while(!stopAutoMode)
             {
-                step_1:
+            step_1:
+                if(stopAutoMode)
+                {
+                    break;
+                }
                 if(!TryConnectToDisplay( ))
                 {
-                    txtStatus.Dispatcher.Invoke(( ) => txtStatus.Text += "\r\nError: No display detected.");
+//                    txtStatus.Dispatcher.Invoke(( ) => txtStatus.Text += "\r\n Помилка: Дісплей не підключено.");
                     goto step_1;
                 }
 
@@ -191,7 +203,7 @@ namespace NEXTION_loader
 
                 if(!WaitForResponse(0x05))
                 {
-                    txtStatus.Dispatcher.Invoke(( ) => txtStatus.Text += "\r\nError: No response after whmi-wri.");
+                    txtStatus.Dispatcher.Invoke(( ) => txtStatus.Text += "\r\n Помилка: нема відповіді на whmi-wri.");
                     goto step_1;
                 }
 
@@ -212,18 +224,18 @@ namespace NEXTION_loader
 
                     if(!WaitForResponse(0x05))
                     {
-                        txtStatus.Dispatcher.Invoke(( ) => txtStatus.Text += "\r\nError: No response after sending data.");
+                        txtStatus.Dispatcher.Invoke(( ) => txtStatus.Text += "\r\n Помилка: Дані не передано.");
                         goto step_1;
                     }
                 }
 
                 if(!WaitForFinalResponse( ))
                 {
-                    txtStatus.Dispatcher.Invoke(( ) => txtStatus.Text += "\r\nError: Final response timeout.");
+                    txtStatus.Dispatcher.Invoke(( ) => txtStatus.Text += "\r\n Помилка: кінцеву відповідь не отримано.");
                 }
                 else
                 {
-                    txtStatus.Dispatcher.Invoke(( ) => txtStatus.Text += "\r\nOK, Firmware update complete.");
+                    txtStatus.Dispatcher.Invoke(( ) => txtStatus.Text += "\r\n ОК! Завершено успішно.");
                 }
 
                 set_bauds_115200( );
