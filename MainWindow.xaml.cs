@@ -14,6 +14,10 @@ namespace NEXTION_loader
         private bool stopAutoMode = false;
         private Thread autoModeThread;
         private int baudrate = 9600;
+        private int MAX_try_page_recieve = 3;
+        private int try_page_recieve = 3;
+        private bool flag_updated;
+
         public MainWindow( )
         {
             InitializeComponent( );
@@ -107,9 +111,9 @@ namespace NEXTION_loader
                 return;
             }
             // Відправляємо команду для початку прошивки
-            SendData($"whmi-wri {new System.IO.FileInfo(firmwareFile).Length},921600,res0 0x790x790x790xFF0xFF0xFF", baudrate);
+            SendData($"whmi-wri {new System.IO.FileInfo(firmwareFile).Length},2921600,res0 0x790x790x790xFF0xFF0xFF", baudrate);
             serialPort.Close( );
-            serialPort.BaudRate = 921600;
+            serialPort.BaudRate = 2921600;
             serialPort.Open( );
             // Чекаємо відповіді 0x05
             if(!WaitForResponse(0x05))
@@ -196,10 +200,12 @@ namespace NEXTION_loader
                     goto step_1;
                 }
 
-                SendData($"whmi-wri {new System.IO.FileInfo(firmwareFile).Length},921600,res0 0x790x790x790xFF0xFF0xFF", baudrate);
+                SendData($"whmi-wri {new System.IO.FileInfo(firmwareFile).Length},1200000,res0 0x790x790x790xFF0xFF0xFF", baudrate);
                 serialPort.Close( );
-                serialPort.BaudRate = 921600;
+                serialPort.BaudRate = 1200000;
                 serialPort.Open( );
+                try_page_recieve = MAX_try_page_recieve;
+                flag_updated = false;
 
                 if(!WaitForResponse(0x05))
                 {
@@ -233,23 +239,52 @@ namespace NEXTION_loader
                 {
                     txtStatus.Dispatcher.Invoke(( ) => txtStatus.Text += "\r\n Помилка: кінцеву відповідь не отримано.");
                 }
-                else
+//                else
                 {
-                    txtStatus.Dispatcher.Invoke(( ) => txtStatus.Text += "\r\n ОК! Завершено успішно.");
+                    set_bauds_115200( );
+                    while(try_page_recieve!=0)
+                    {                    
+                        Thread.Sleep(1000);
+                        SendData("sendme0xFF0xFF0xFF", 115200);
+                        if(!WaitForResponse(0x07))
+                        {
+                            SendData("sendme0xFF0xFF0xFF", 115200);
+                            if(!WaitForResponse(0x07))
+                            {
+                                SendData("sendme0xFF0xFF0xFF", 115200);
+                                if(!WaitForResponse(0x07))
+                                {
+                                    SendData("page 70xFF0xFF0xFF", 115200);
+                                    try_page_recieve--;
+                                    txtStatus.Dispatcher.Invoke(( ) => txtStatus.Text += "\r\n Отримую номер сторінки.");
+                                }
+                            }
+                        }
+                        else
+                        {
+                            SendData("t4.txt=\"UPDATED\"0xFF0xFF0xFF", 115200);
+                            WaitForResponse(0xff);
+                            if(flag_updated == false)
+                            {
+                                flag_updated = true;
+                                txtStatus.Dispatcher.Invoke(( ) => txtStatus.Text += "\r\n ОК! Завершено успішно.");
+                            }
+                        }
+                    }
+                    txtStatus.Dispatcher.Invoke(( ) => txtStatus.Text += "\r\n Очікую підключення дісплея");
                 }
 
-                set_bauds_115200( );
 
-                SendData("page 10xFF0xFF0xFF", 115200);
-                Thread.Sleep(2000);
-                SendData("page 20xFF0xFF0xFF", 115200);
-                Thread.Sleep(2000);
-                SendData("page 30xFF0xFF0xFF", 115200);
-                Thread.Sleep(2000);
-                SendData("page 40xFF0xFF0xFF", 115200);
-                Thread.Sleep(2000);
-                SendData("page 50xFF0xFF0xFF", 115200);
-                Thread.Sleep(2000);
+                //SendData("page 10xFF0xFF0xFF", 115200);
+                //Thread.Sleep(2000);
+                //SendData("page 20xFF0xFF0xFF", 115200);
+                //Thread.Sleep(2000);
+                //SendData("page 30xFF0xFF0xFF", 115200);
+                //Thread.Sleep(2000);
+                //SendData("page 40xFF0xFF0xFF", 115200);
+                //Thread.Sleep(2000);
+                //SendData("page 50xFF0xFF0xFF", 115200);
+                //Thread.Sleep(2000);
 
             }
         }
@@ -378,24 +413,49 @@ namespace NEXTION_loader
         private bool WaitForResponse(byte expectedByte)
         {
             int timeout = 1000; // 1 секунда
-            int receivedByte;
             DateTime startTime = DateTime.Now;
 
             while((DateTime.Now - startTime).TotalMilliseconds < timeout)
             {
                 if(serialPort.BytesToRead > 0)
                 {
-                    receivedByte = serialPort.ReadByte(); // Читаємо по 1 байту
+                    byte[] buffer = new byte[serialPort.BytesToRead];
+                    serialPort.Read(buffer, 0, buffer.Length);
 
-                    if(receivedByte == expectedByte)
+                    // Перевіряємо, чи з'явились обидва очікувані байти
+                    if(buffer.Contains(expectedByte))
                     {
-                        return true; // Отримали потрібний байт
+                        return true;
                     }
                 }
             }
 
             return false; // Таймаут
         }
+        private bool WaitForResponse(byte expectedByte1, byte expectedByte2)
+        {
+            int timeout = 500; // 1 секунда
+            DateTime startTime = DateTime.Now;
+
+            while((DateTime.Now - startTime).TotalMilliseconds < timeout)
+            {
+                if(serialPort.BytesToRead > 0)
+                {
+                    byte[] buffer = new byte[serialPort.BytesToRead];
+                    serialPort.Read(buffer, 0, buffer.Length);
+
+                    // Перевіряємо, чи з'явились обидва очікувані байти
+                    if(buffer.Contains(expectedByte1) && buffer.Contains(expectedByte2))
+                    {
+                        return true;
+                    }
+                }
+            }
+
+            // Якщо таймаут і обидва байти не прийшли
+            return false;
+        }
+
 
         // Очікування фінальної відповіді після передачі
         private bool WaitForFinalResponse( )
@@ -403,9 +463,9 @@ namespace NEXTION_loader
             serialPort.BaudRate = baudrate; // Переходимо на швидкість 9600
             byte[] expectedResponse = new byte[] { 0x00, 0x00, 0x00, 0xFF, 0xFF, 0xFF, 0x88, 0xFF, 0xFF, 0xFF };
 
-            // Чекаємо на відповідь протягом 2 секунд
+            // Чекаємо на відповідь протягом 10 секунд
             DateTime startTime = DateTime.Now;
-            while((DateTime.Now - startTime).TotalMilliseconds < 15000)
+            while((DateTime.Now - startTime).TotalMilliseconds < 10000)
             {
                 if(serialPort.BytesToRead > 0)
                 {
@@ -433,7 +493,7 @@ namespace NEXTION_loader
                     }
                 }
             }
-            // Якщо за 2 секунди відповідь не надійшла або не співпала
+            // Якщо відповідь не надійшла або не співпала
             return false;
         }
 

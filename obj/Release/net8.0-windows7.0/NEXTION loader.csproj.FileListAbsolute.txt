@@ -78,3 +78,4 @@ D:\Project\Visual_Studio\NEXTION loader\obj\Release\net8.0-windows7.0\refint\NEX
 D:\Project\Visual_Studio\NEXTION loader\obj\Release\net8.0-windows7.0\NEXTION loader.pdb
 D:\Project\Visual_Studio\NEXTION loader\obj\Release\net8.0-windows7.0\NEXTION loader.genruntimeconfig.cache
 D:\Project\Visual_Studio\NEXTION loader\obj\Release\net8.0-windows7.0\ref\NEXTION loader.dll
+D:\Project\Visual_Studio\NEXTION loader\obj\Release\net8.0-windows7.0\NEXTION loader.sourcelink.json
