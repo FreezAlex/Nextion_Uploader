@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("NEXTION loader")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Release")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+f9077999bc9346fa0a4600c9dd39df5352064779")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+4b1774b30d9c443216fc2f823fde22542bf0e715")]
 [assembly: System.Reflection.AssemblyProductAttribute("NEXTION loader")]
 [assembly: System.Reflection.AssemblyTitleAttribute("NEXTION loader")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

@@ -13,11 +13,13 @@
     ],
     "additionalProbingPaths": [
       "C:\\Users\\Berej\\.dotnet\\store\\|arch|\\|tfm|",
-      "C:\\Users\\Berej\\.nuget\\packages"
+      "C:\\Users\\Berej\\.nuget\\packages",
+      "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
     ],
     "configProperties": {
       "System.Reflection.Metadata.MetadataUpdater.IsSupported": false,
       "System.Runtime.Serialization.EnableUnsafeBinaryFormatterSerialization": true,
+      "CSWINRT_USE_WINDOWS_UI_XAML_PROJECTIONS": false,
       "Microsoft.NETCore.DotNetHostPolicy.SetAppPaths": true
     }
   }

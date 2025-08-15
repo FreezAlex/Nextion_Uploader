@@ -1,0 +1,45 @@
+﻿<Window x:Class="NEXTION_loader.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Nextion Programmer" Height="400" Width="420">
+    <Grid Margin="10">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+
+        <!-- Вибір файлу -->
+        <Label Content="Файл прошивки:" Grid.Row="0" Grid.Column="0" VerticalAlignment="Center"/>
+        <Button Name="btnSelectFile" Content="Відкрити файл" Grid.Row="0" Grid.Column="1" Height="30" Margin="5" Click="btnSelectFile_Click"/>
+
+        <!-- Вибір COM порту -->
+        <Label Content="COM порт:" Grid.Row="1" Grid.Column="0" VerticalAlignment="Center"/>
+        <ComboBox Name="cbComPorts" Grid.Row="1" Grid.Column="1" Height="30" Margin="5" SelectionChanged="cbComPorts_SelectionChanged"/>
+
+        <!-- Кнопки керування -->
+        <StackPanel Grid.Row="2" Grid.ColumnSpan="2" Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,10,0,0" >
+            <Button Name="btnAutoMode" Content="Автоматична прошивка" Width="150" Height="30" Margin="5" Click="btnAutoMode_Click"/>
+            <Button Name="btnManualMode" Content="Прошивка (разова)" Width="150" Height="30" Margin="5" Click="btnManualMode_Click"/>
+        </StackPanel>
+        <StackPanel Grid.Row="3" Grid.ColumnSpan="2" Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,0,0,0">
+            <Button Name="btnSendBauds" Content="Встановити швидкість" Width="150" Height="30" Margin="5" Click="btnSendBauds_Click"/>
+            <Button Name="btnStopAutoMode" Content="Зупинити" Width="150" Height="30" Margin="5" Click="btnStopAutoMode_Click" IsEnabled="False"/>
+        </StackPanel>
+
+        <!-- Статус та прогрес -->
+        <GroupBox Header="Статус" Grid.Row="4" Grid.ColumnSpan="2" Margin="0,10,0,0">
+            <Grid>
+                <TextBox Name="txtStatus" Height="120" Margin="5" IsReadOnly="True" VerticalScrollBarVisibility="Auto" TextWrapping="Wrap"/>
+            </Grid>
+        </GroupBox>
+        <ProgressBar Name="progressBar" Grid.Row="5" Grid.ColumnSpan="2" Height="20" Margin="0,10,0,0" Minimum="0" Maximum="100" Value="0"/>
+    </Grid>
+</Window>

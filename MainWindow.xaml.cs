@@ -17,6 +17,7 @@ namespace NEXTION_loader
         private int MAX_try_page_recieve = 3;
         private int try_page_recieve = 3;
         private bool flag_updated;
+        public int Update_Speed = 1200000;
 
         public MainWindow( )
         {
@@ -200,9 +201,9 @@ namespace NEXTION_loader
                     goto step_1;
                 }
 
-                SendData($"whmi-wri {new System.IO.FileInfo(firmwareFile).Length},1200000,res0 0x790x790x790xFF0xFF0xFF", baudrate);
+                SendData($"whmi-wri {new System.IO.FileInfo(firmwareFile).Length},{Update_Speed},res0 0x790x790x790xFF0xFF0xFF", baudrate);
                 serialPort.Close( );
-                serialPort.BaudRate = 1200000;
+                serialPort.BaudRate = Update_Speed;
                 serialPort.Open( );
                 try_page_recieve = MAX_try_page_recieve;
                 flag_updated = false;
